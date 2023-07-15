@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "NexPod Notifier",
+  "version": "1.0",
+  "description": "NexPod Messager",
+  "permissions": ["activeTab", 
+		"https://crm.zoho.in/*",
+		"https://wa-toolbox.web.app/*",
+    "https://connect.pabbly.com/*"
+
+],
+"content_scripts": [
+  {
+    "js": ["content/content.js"],
+    "matches": ["https://crm.zoho.in/*"]
+  }
+],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "NexPod Notifier"
+  },
+  "host_permissions": ["https://connect.pabbly.com/","https://wa-toolbox.web.app/"]
+}

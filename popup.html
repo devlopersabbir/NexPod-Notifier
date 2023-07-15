@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Webhook Notifier</title>
+  <style>
+    body {
+      width: 300px;
+      padding: 10px;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+
+    input[type="text"],
+    textarea {
+      width: 100%;
+      padding: 5px;
+      margin-top: 5px;
+    }
+
+    button {
+      margin-top: 10px;
+    }
+  </style>
+  <script src="popup.js"></script>
+</head>
+<body>
+  <h1>Webhook Notifier</h1>
+  <label for="webhook-url">Webhook URL:</label>
+  <input type="text" id="webhook-url" />
+
+  <label for="mobile">Mobile:</label>
+  <input type="text" id="mobile" />
+
+  <label for="type">Type:</label>
+  <input type="text" id="type" />
+
+  <label for="attachment">Attachments:</label>
+  <input type="file" id="type" />
+
+  <label for="content">Content:</label>
+  <textarea id="content"></textarea>
+
+  <button id="submit">Submit</button>
+</body>
+</html>
