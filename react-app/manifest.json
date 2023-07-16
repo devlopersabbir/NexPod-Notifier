@@ -12,7 +12,7 @@
       "32": "icon.png"
     }
   },
-  "permissions": ["storage", "activeTab", "tabs"],
+  "permissions": ["storage", "activeTab", "tabs", "unlimitedStorage"],
   "icons": {
     "128": "icon.png",
     "16": "icon.png",
@@ -32,8 +32,18 @@
       ]
     }
   ],
+  "web_accessible_resources": [
+    {
+      "use_dynamic_url": true,
+      "resources": [""]
+    }
+  ],
   "host_permissions": [
     "https://connect.pabbly.com/",
     "https://wa-toolbox.web.app/"
-  ]
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'",
+    "sandbox": "sandbox allow-scripts; default-src 'self'; script-src 'self' https://cdn.jsdelivr.net https://*.grammarly.com; style-src 'self' 'unsafe-inline'; img-src data: https://*.grammarly.com; connect-src https://*.grammarly.com https://*.grammarly.io wss://*.grammarly.com"
+  }
 }

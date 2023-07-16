@@ -10,3 +10,10 @@
  * Developer_username: @devlopersabbir
  * Github_repo: https://github.com/devlopersabbir/NexPod-Notifier
  */
+
+
+chrome.tabs.onUpdated.addListener((tabId: number, changeInfo: chrome.tabs.TabChangeInfo, _: chrome.tabs.Tab) => {
+    if (changeInfo.status === "complete") {
+        chrome.tabs.sendMessage(tabId, { message: "tabPathChanged" })
+    }
+})

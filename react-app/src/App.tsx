@@ -15,6 +15,7 @@ import { useState, useEffect } from "react";
 import { TSendType } from "./utils/types";
 import axios from "axios";
 import { toast } from "react-hot-toast";
+import { GrammarlyEditorPlugin } from "@grammarly/editor-sdk-react";
 
 const App = () => {
   const [webHookURL, setWebHookURL] = useState<string>("");
@@ -75,10 +76,11 @@ const App = () => {
 
   useEffect(() => {
     chrome.storage.sync
-      .get(["selectedText", "webHookURL"])
+      .get(["selectedText", "webHookURL", "mobileNumber"])
       .then((res) => {
         setMobileNumber(res?.selectedText);
         setWebHookURL(res?.webHookURL);
+        setMobileNumber(res?.mobileNumber);
       })
       .catch(() => toast.error("Fail to get number!"));
   }, []);
@@ -149,13 +151,17 @@ const App = () => {
 
         <FormControl isRequired>
           <FormLabel color="white"> Content</FormLabel>
-          <Textarea
-            value={contentMessage}
-            onChange={(e) => setContentMessage(e.target.value)}
-            color="white"
-            fontWeight="semibold"
-            placeholder="Enter your message here..."
-          />
+          <GrammarlyEditorPlugin clientId="client_1jyQx3p1EgvMWhcm3rSUFS">
+            <Textarea
+              contentEditable="true"
+              rows={7}
+              value={contentMessage}
+              onChange={(e) => setContentMessage(e.target.value)}
+              color="white"
+              fontWeight="semibold"
+              placeholder="Enter your message here..."
+            />
+          </GrammarlyEditorPlugin>
         </FormControl>
         <Button
           type="button"
