@@ -7,7 +7,7 @@ export const createFloatingButton = () => {
   createButton.style.position = "absolute";
   createButton.style.width = "50px";
   createButton.style.height = "50px";
-  createButton.style.top = "50px";
+  createButton.style.top = "40px";
   createButton.style.right = "10px";
     createButton.style.zIndex = "99999999999";
     

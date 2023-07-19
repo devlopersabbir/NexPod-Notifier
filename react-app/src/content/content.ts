@@ -75,7 +75,7 @@ const createAButtonToOpenPopup = () => {
         e.preventDefault();
 
         if (!webhookUrl || !mobileNumber || !sendType || !messageContent) {
-          return alert("fill the form!");
+          return alert("fill the required input form!");
         }
 
         if (sendType.value.toLowerCase() === "text") {
@@ -89,7 +89,9 @@ const createAButtonToOpenPopup = () => {
           try {
             await axios.post(`${webhookUrl.value}`, data);
             chrome.storage.sync.set({ webHookURL: webhookUrl.value });
+            closeTheModal()
           } catch (error) {
+            alert("Fail to send message")
             console.log("err", error);
           }
         } else if (sendType.value.toLowerCase() === "media") {
@@ -104,6 +106,7 @@ const createAButtonToOpenPopup = () => {
           try {
             await axios.post(`${webhookUrl.value}`, data);
             chrome.storage.sync.set({ webHookURL: webhookUrl.value });
+            closeTheModal()
           } catch (error) {
             alert("Error to send message")
           }
@@ -112,9 +115,12 @@ const createAButtonToOpenPopup = () => {
         }
       });
 
-      modalCloseBtn?.addEventListener("click", () => {
+
+      const closeTheModal = () => {
         myExtensionModal.style.display = "none";
-      });
+      }
+
+      modalCloseBtn?.addEventListener("click", closeTheModal);
     }, 1000);
   });
 };
