@@ -15,7 +15,6 @@ import { useState, useEffect } from "react";
 import { TSendType } from "./utils/types";
 import axios from "axios";
 import { toast } from "react-hot-toast";
-import { GrammarlyEditorPlugin } from "@grammarly/editor-sdk-react";
 
 const App = () => {
   const [webHookURL, setWebHookURL] = useState<string>("");
@@ -151,7 +150,6 @@ const App = () => {
 
         <FormControl isRequired>
           <FormLabel color="white"> Content</FormLabel>
-          <GrammarlyEditorPlugin clientId="client_1jyQx3p1EgvMWhcm3rSUFS">
             <Textarea
               contentEditable="true"
               rows={7}
@@ -161,7 +159,6 @@ const App = () => {
               fontWeight="semibold"
               placeholder="Enter your message here..."
             />
-          </GrammarlyEditorPlugin>
         </FormControl>
         <Button
           type="button"

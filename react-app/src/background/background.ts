@@ -17,3 +17,12 @@ chrome.tabs.onUpdated.addListener((tabId: number, changeInfo: chrome.tabs.TabCha
         chrome.tabs.sendMessage(tabId, { message: "tabPathChanged" })
     }
 })
+
+chrome.runtime.onMessage.addListener((request, _, sendResponse) => {
+    if (request === "open_popup") {
+        chrome.action.openPopup();
+        sendResponse("Open successfully!")
+    } else {
+        console.log("request: ",request)
+    }
+ })
