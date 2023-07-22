@@ -30,8 +30,13 @@ const htmlModal = `
         <input style="padding: 3px 7px; font-size: 18px; font-weight: 600" type="text" id="mobileNumber" />
 
         <label for="sendType">Type:</label>
+        <!--
         <input style="padding: 3px 7px; font-size: 18px; font-weight: 600" type="text" id="sendType" placeholder="text OR media" />
-
+-->
+<select style="padding: 3px 7px; font-size: 18px; font-weight: 600" name="sendType" id="sendType">
+  <option value="text">Text</option>
+  <option value="media">Media</option>
+</select>
         <label for="mediaUrl">Attachments url:</label>
         <input style="padding: 3px 7px; font-size: 18px; font-weight: 600" type="text" id="mediaUrl" />
 

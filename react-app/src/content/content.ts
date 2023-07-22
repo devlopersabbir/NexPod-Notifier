@@ -11,15 +11,33 @@
  * Github_repo: https://github.com/devlopersabbir/NexPod-Notifier
  */
 
-import { createFloatingButton } from "../utils/elements/flotingBtn";
 import { createwWebPageModal } from "../utils/elements/newModal";
 import axios from "axios";
 
 // clear console
 console.clear();
 
-const createAButtonToOpenPopup = () => {
-  createFloatingButton();
+export const createFloatingButton = (container: HTMLDivElement) => {
+
+  const createButton = document.createElement("img");
+  createButton.src = "https://img.icons8.com/?size=512&id=108653&format=png";
+  createButton.id = "floatingIconButton";
+  createButton.alt = "icon button";
+  createButton.style.cursor = "pointer";
+  // createButton.style.position = "absolute";
+  createButton.style.width = "50px";
+  createButton.style.height = "50px";
+  // createButton.style.top = "49px";
+  // createButton.style.right = "30%";
+  createButton.style.zIndex = "99999999999";
+
+  // document.body.appendChild(createButton);
+  container.appendChild(createButton)
+};
+
+
+const createAButtonToOpenPopup = (container: HTMLDivElement) => {
+  createFloatingButton(container as HTMLDivElement);
   createwWebPageModal();
   let webHookURL: string;
   let mobileNumbers: string;
@@ -61,7 +79,7 @@ const createAButtonToOpenPopup = () => {
       const sendType: HTMLInputElement = document.getElementById(
         "sendType"
       ) as HTMLInputElement;
-      const mediaUrl = document.getElementById("mediaUrl");
+      const mediaUrl: HTMLInputElement = document.getElementById("mediaUrl") as HTMLInputElement;
       const messageContent: HTMLTextAreaElement = document.getElementById(
         "messageContent"
       ) as HTMLTextAreaElement;
@@ -74,9 +92,10 @@ const createAButtonToOpenPopup = () => {
       submitBtn?.addEventListener("click", async (e) => {
         e.preventDefault();
 
-        if (!webhookUrl || !mobileNumber || !sendType || !messageContent) {
+        if (!webhookUrl.value || !mobileNumber.value || !messageContent.value) {
           return alert("fill the required input form!");
         }
+
 
         if (sendType.value.toLowerCase() === "text") {
           const data = {
@@ -85,33 +104,44 @@ const createAButtonToOpenPopup = () => {
             content: messageContent.value,
             phone: mobileNumber.value,
           };
-          console.log(data);
           try {
             await axios.post(`${webhookUrl.value}`, data);
             chrome.storage.sync.set({ webHookURL: webhookUrl.value });
+            sendType.value = "";
+            messageContent.value = "";
+            mobileNumber.value = "";
+            webhookUrl.value = "";
             closeTheModal()
           } catch (error) {
             alert("Fail to send message")
-            console.log("err", error);
+          } finally {
+
           }
         } else if (sendType.value.toLowerCase() === "media") {
+          if (!mediaUrl.value) return alert("Please set media url!");
           const data = {
             action: "send-message",
             type: "media",
             content: messageContent.value,
-            attachments: [`${mediaUrl}`],
+            attachments: [`${mediaUrl.value}`],
             phone: mobileNumber.value,
           };
-
+          console.log('data: ', data)
           try {
             await axios.post(`${webhookUrl.value}`, data);
             chrome.storage.sync.set({ webHookURL: webhookUrl.value });
+            sendType.value = "";
+            messageContent.value = "";
+            mobileNumber.value = "";
+            webhookUrl.value = "";
             closeTheModal()
           } catch (error) {
             alert("Error to send message")
           }
+        } else if (!sendType.value) {
+          alert("Please enter the send type!")
         } else {
-          alert("Invalid type!");
+          alert("Invalid form!")
         }
       });
 
@@ -131,6 +161,19 @@ const init = () => {
     if (request.message === "tabPathChanged") {
       setTimeout(() => {
         const numberElement = document.getElementById("subvalue_MOBILE");
+        const containerForSetIcon: HTMLDivElement = document.querySelector(".lyteTableScroll") as HTMLDivElement;
+        const containerForSetIconNumberPage: HTMLDivElement = document.getElementsByClassName("dv_header_container dF")[0] as HTMLDivElement;
+        const ifAlreadyHaveFlotingIcon: HTMLImageElement = document.getElementById("floatingIconButton") as HTMLImageElement;
+
+        if (containerForSetIcon) {
+          containerForSetIcon.style.display = "flex";
+          containerForSetIcon.style.alignItems = "center";
+          ifAlreadyHaveFlotingIcon ? null : createAButtonToOpenPopup(containerForSetIcon);
+        } else if (containerForSetIconNumberPage) {
+          containerForSetIconNumberPage.style.display = "flex";
+          containerForSetIconNumberPage.style.alignItems = "center";
+          ifAlreadyHaveFlotingIcon ? null : createAButtonToOpenPopup(containerForSetIconNumberPage);
+        }
         if (numberElement) {
           const mobileNumber = numberElement.innerText
             ?.trim()
@@ -145,5 +188,8 @@ const init = () => {
 
 if (document.readyState === "complete") {
   init();
-  createAButtonToOpenPopup();
+
 }
+
+
+

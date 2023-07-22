@@ -25,10 +25,7 @@
   "content_scripts": [
     {
       "js": ["src/content/content.ts"],
-      "matches": [
-        "https://crm.zoho.com/crm/*/tab/Leads/*",
-        "https://crm.zoho.in/crm/*/tab/Leads/*"
-      ],
+      "matches": ["https://crm.zoho.com/crm/*", "https://crm.zoho.in/crm/*"],
       "run_at": "document_end"
     }
   ],
