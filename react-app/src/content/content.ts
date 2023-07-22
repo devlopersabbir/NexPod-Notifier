@@ -12,10 +12,10 @@
  */
 
 import { createwWebPageModal } from "../utils/elements/newModal";
-import axios from "axios";
 
 // clear console
 console.clear();
+let isLoading: boolean = false;
 
 export const createFloatingButton = (container: HTMLDivElement) => {
 
@@ -83,21 +83,23 @@ const createAButtonToOpenPopup = (container: HTMLDivElement) => {
       const messageContent: HTMLTextAreaElement = document.getElementById(
         "messageContent"
       ) as HTMLTextAreaElement;
-      const submitBtn = document.getElementById("submitBtn");
+      const submitBtn: HTMLButtonElement = document.getElementById("submitBtn") as HTMLButtonElement;
 
       // predefine value
       webhookUrl.value = webHookURL ?? "";
       mobileNumber.value = mobileNumbers ?? "";
 
+
+
       submitBtn?.addEventListener("click", async (e) => {
         e.preventDefault();
-
         if (!webhookUrl.value || !mobileNumber.value || !messageContent.value) {
           return alert("fill the required input form!");
         }
 
 
         if (sendType.value.toLowerCase() === "text") {
+          isLoading = true;
           const data = {
             action: "send-message",
             type: "text",
@@ -105,20 +107,31 @@ const createAButtonToOpenPopup = (container: HTMLDivElement) => {
             phone: mobileNumber.value,
           };
           try {
-            await axios.post(`${webhookUrl.value}`, data);
+            await fetch(`${webhookUrl.value}`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(data)
+            });
             chrome.storage.sync.set({ webHookURL: webhookUrl.value });
             sendType.value = "";
             messageContent.value = "";
             mobileNumber.value = "";
             webhookUrl.value = "";
-            closeTheModal()
+            isLoading = false;
+            alert("Message Sended!")
+            closeTheModal();
+            return;
           } catch (error) {
             alert("Fail to send message")
-          } finally {
-
+            if (error) {
+              isLoading = false;
+            }
           }
         } else if (sendType.value.toLowerCase() === "media") {
           if (!mediaUrl.value) return alert("Please set media url!");
+          isLoading = true;
           const data = {
             action: "send-message",
             type: "media",
@@ -128,15 +141,27 @@ const createAButtonToOpenPopup = (container: HTMLDivElement) => {
           };
           console.log('data: ', data)
           try {
-            await axios.post(`${webhookUrl.value}`, data);
+            await fetch(`${webhookUrl.value}`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(data)
+            });
             chrome.storage.sync.set({ webHookURL: webhookUrl.value });
             sendType.value = "";
             messageContent.value = "";
             mobileNumber.value = "";
             webhookUrl.value = "";
-            closeTheModal()
+            isLoading = false;
+            alert("Media sended!")
+            closeTheModal();
+            return;
           } catch (error) {
             alert("Error to send message")
+            if (error) {
+              isLoading = false;
+            }
           }
         } else if (!sendType.value) {
           alert("Please enter the send type!")
@@ -162,7 +187,7 @@ const init = () => {
       setTimeout(() => {
         const numberElement = document.getElementById("subvalue_MOBILE");
         const containerForSetIcon: HTMLDivElement = document.querySelector(".lyteTableScroll") as HTMLDivElement;
-        const containerForSetIconNumberPage: HTMLDivElement = document.getElementsByClassName("dv_header_container dF")[0] as HTMLDivElement;
+        const containerForSetIconNumberPage: HTMLDivElement = document.querySelector(".dv_header_container") as HTMLDivElement;
         const ifAlreadyHaveFlotingIcon: HTMLImageElement = document.getElementById("floatingIconButton") as HTMLImageElement;
 
         if (containerForSetIcon) {
@@ -172,7 +197,13 @@ const init = () => {
         } else if (containerForSetIconNumberPage) {
           containerForSetIconNumberPage.style.display = "flex";
           containerForSetIconNumberPage.style.alignItems = "center";
+          console.log("got this element==============================")
           ifAlreadyHaveFlotingIcon ? null : createAButtonToOpenPopup(containerForSetIconNumberPage);
+          ifAlreadyHaveFlotingIcon ? console.log("====================================floating icon have") : console.log("floating icon don't have=================================")
+        } else {
+          console.log('second page: ', containerForSetIconNumberPage)
+          console.log('fst page: ', containerForSetIcon)
+          console.log('Dont have any element================')
         }
         if (numberElement) {
           const mobileNumber = numberElement.innerText
