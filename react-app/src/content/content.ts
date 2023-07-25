@@ -15,7 +15,6 @@ import { createwWebPageModal } from "../utils/elements/newModal";
 
 // clear console
 console.clear();
-let isLoading: boolean = false;
 
 export const createFloatingButton = (container: HTMLDivElement) => {
 
@@ -24,14 +23,10 @@ export const createFloatingButton = (container: HTMLDivElement) => {
   createButton.id = "floatingIconButton";
   createButton.alt = "icon button";
   createButton.style.cursor = "pointer";
-  // createButton.style.position = "absolute";
   createButton.style.width = "50px";
   createButton.style.height = "50px";
-  // createButton.style.top = "49px";
-  // createButton.style.right = "30%";
   createButton.style.zIndex = "99999999999";
 
-  // document.body.appendChild(createButton);
   container.appendChild(createButton)
 };
 
@@ -99,7 +94,6 @@ const createAButtonToOpenPopup = (container: HTMLDivElement) => {
 
 
         if (sendType.value.toLowerCase() === "text") {
-          isLoading = true;
           const data = {
             action: "send-message",
             type: "text",
@@ -119,19 +113,14 @@ const createAButtonToOpenPopup = (container: HTMLDivElement) => {
             messageContent.value = "";
             mobileNumber.value = "";
             webhookUrl.value = "";
-            isLoading = false;
             alert("Message Sended!")
             closeTheModal();
             return;
           } catch (error) {
             alert("Fail to send message")
-            if (error) {
-              isLoading = false;
-            }
           }
         } else if (sendType.value.toLowerCase() === "media") {
           if (!mediaUrl.value) return alert("Please set media url!");
-          isLoading = true;
           const data = {
             action: "send-message",
             type: "media",
@@ -139,7 +128,6 @@ const createAButtonToOpenPopup = (container: HTMLDivElement) => {
             attachments: [`${mediaUrl.value}`],
             phone: mobileNumber.value,
           };
-          console.log('data: ', data)
           try {
             await fetch(`${webhookUrl.value}`, {
               method: "POST",
@@ -153,15 +141,11 @@ const createAButtonToOpenPopup = (container: HTMLDivElement) => {
             messageContent.value = "";
             mobileNumber.value = "";
             webhookUrl.value = "";
-            isLoading = false;
             alert("Media sended!")
             closeTheModal();
             return;
           } catch (error) {
             alert("Error to send message")
-            if (error) {
-              isLoading = false;
-            }
           }
         } else if (!sendType.value) {
           alert("Please enter the send type!")
@@ -197,14 +181,9 @@ const init = () => {
         } else if (containerForSetIconNumberPage) {
           containerForSetIconNumberPage.style.display = "flex";
           containerForSetIconNumberPage.style.alignItems = "center";
-          console.log("got this element==============================")
           ifAlreadyHaveFlotingIcon ? null : createAButtonToOpenPopup(containerForSetIconNumberPage);
-          ifAlreadyHaveFlotingIcon ? console.log("====================================floating icon have") : console.log("floating icon don't have=================================")
-        } else {
-          console.log('second page: ', containerForSetIconNumberPage)
-          console.log('fst page: ', containerForSetIcon)
-          console.log('Dont have any element================')
         }
+
         if (numberElement) {
           const mobileNumber = numberElement.innerText
             ?.trim()
@@ -219,7 +198,6 @@ const init = () => {
 
 if (document.readyState === "complete") {
   init();
-
 }
 
 
