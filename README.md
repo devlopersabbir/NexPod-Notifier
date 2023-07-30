@@ -1,1 +1,1 @@
-# NexPod-Notifier
+# NexPod-Notifier Google Chrome Extension
