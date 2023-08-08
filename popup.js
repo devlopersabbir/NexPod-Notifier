@@ -1,65 +1,86 @@
+console.log("Popup.js")
 // global var
 let isSubmitting = false;
 
-async function main(){
-const { webHookURL, mobileNumber, selectedText } = await chrome.storage.local.get([
-  "webHookURL",
-  "mobileNumber",
-  "selectedText"
-]);
+async function main() {
 
-const webhookUrl = document.getElementById("webhookUrl").value = webHookURL || "";
-const mobileNumbers = document.getElementById("mobileNumber").value = mobileNumber || "";
-const sendType = document.getElementById("sendType").value;
-const messageContent = document.getElementById("messageContent").value;
-const mediaUrl = document.getElementById("mediaUrl").value;
-const formElement = document.querySelector("form");
+  const { webHookURL, mobileNumber, selectedText } = await chrome.storage.local.get([
+    "webHookURL",
+    "mobileNumber",
+    "selectedText"
+  ]);
 
-formElement.addEventListener("submit", async function (event) {
-  if (isSubmitting) return;
-  document.getElementById("formSubmitBtn").disabled = true;
+  const formElement = document.querySelector("form");
+  const submitBtn = document.querySelector('button');
 
-  if (!webhookUrl || !mobileNumber || !messageContent) {
-    return alert("Fill the form.");
+  if (webHookURL) {
+    formElement.elements.namedItem('webHookURL').value = webHookURL;
+  }
+  if (selectedText) {
+    formElement.elements.namedItem('mobileNumber').value = selectedText;
+  } else if (mobileNumber) {
+    formElement.elements.namedItem('mobileNumber').value = mobileNumber;
   }
 
-  let data = {
-    action: "send-message",
-    type: sendType,
-    content: messageContent,
-    phone: mobileNumber,
-  };
+  formElement.addEventListener("submit", async function(event) {
+    event.preventDefault();
 
-  if (sendType === "media" && !mediaUrl) {
-    return alert("Attach media url");
-  }
 
-  if (sendType === "media" && mediaUrl) {
-    data = { ...data, attachments: [`${mediaUrl}`] };
-  }
+    if (isSubmitting) return;
 
-  try {
-    isSubmitting = true;
+    const form = new FormData(event.target);
 
-    await fetch(webhookUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
 
-    chrome.storage.sync.set({ webHookURL: webhookUrl });
+    const webHookURLInputValue = form.get('webHookURL');
+    const sendTypeInputValue = form.get('sendType');
+    const messageContentInputValue = form.get('messageContent');
+    const mobileNumberInputValue = form.get('mobileNumber');
+    const mediaUrlInputValue = form.get('mediaUrl');
 
-    alert("Your message has been send!");
-  } catch (error) {
-    console.log("Submitting error", error);
-    alert("Something went wrong");
-  } finally {
-    isSubmitting = false;
-    document.getElementById("formSubmitBtn").disabled = false;
-  }
-});
+    if (!webHookURLInputValue || !mobileNumberInputValue || !messageContentInputValue) {
+      return alert("Fill the form.");
+    }
+
+    let data = {
+      action: "send-message",
+      type: sendTypeInputValue,
+      content: messageContentInputValue,
+      phone: mobileNumberInputValue,
+    };
+
+    if (sendTypeInputValue === "media" && !mediaUrlInputValue) {
+      return alert("Attach media url");
+    }
+
+    if (sendTypeInputValue === "media" && mediaUrlInputValue) {
+      data = { ...data, attachments: [mediaUrlInputValue] };
+    }
+
+    try {
+      isSubmitting = true;
+      submitBtn.innerText = "Submitting...";
+
+
+      await fetch(webHookURLInputValue, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      chrome.storage.local.set({ webHookURL: webHookURLInputValue });
+      alert("Your message has been send!");
+      formElement.elements.namedItem('messageContent').value = "";
+
+    } catch (error) {
+      console.log("Submitting error", error);
+      alert("Something went wrong");
+    } finally {
+      isSubmitting = false;
+      submitBtn.innerText = "Submit";
+    }
+  });
 }
 
 

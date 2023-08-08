@@ -21,7 +21,7 @@ const formCloseId = "whats-app-model-form-close-v3";
 const formSubmitBtn = "whats-app-model-form-submit-btn-v3";
 const toastId = "whats-app-toast-notify-v3";
 let isSubmitting = false;
-const INITAL_LOADING_TIME = 3000;
+const INITAL_LOADING_TIME = 4000;
 
 function createButton() {
   const img = document.createElement("img");
@@ -95,7 +95,6 @@ async function createForm() {
       "mobileNumber",
       "selectedText",
     ]);
-  console.log("got selected text: ", selectedText);
 
   const inputStyle =
     "resize: none; font-size: 16px; font-weight: 500; background: #475569; color: #e2e8f0; border-radius: 8px; padding: 8px 12px; outline: none; border: 1px solid #1e293b";
@@ -106,14 +105,12 @@ async function createForm() {
       <div style="display: flex; flex-direction: column;  gap: 7px; padding: 20px">
         <h1 style="text-align: center; margin-bottom: 10px; color: #f8fafc;">Webhook Notifier</h1>
         <label for="webhookUrl" style="color: #cbd5e1;">Webhook URL:</label>
-        <input  name="webhookUrl" value="${
-          webHookURL ?? ""
-        }" style="${inputStyle}"  type="text" id="webhookUrl" />
+        <input  name="webhookUrl" value="${webHookURL ?? ""
+    }" style="${inputStyle}"  type="text" id="webhookUrl" />
 
         <label for="mobileNumber" style="color: #cbd5e1;">Mobile:</label>
-        <input name="mobileNumber" value="${
-          selectedText ? selectedText : mobileNumber ?? ""
-        }" style="${inputStyle}" type="text" id="mobileNumber" />
+        <input name="mobileNumber" value="${selectedText ? selectedText : mobileNumber ?? ""
+    }" style="${inputStyle}" type="text" id="mobileNumber" />
 
         <label for="sendType" style="color: #cbd5e1;">Type:</label>
         <select style="${inputStyle}" name="sendType" id="sendType">
@@ -142,7 +139,6 @@ async function closeModal() {
 
   if (closeBtnElements) {
     closeBtnElements.forEach(async (item) => {
-      await chrome.storage.local.remove(["selectedText", "mobileNumber"]);
       item.remove();
     });
   }
@@ -205,14 +201,13 @@ async function onSubmit() {
 async function main() {
   closeModal();
 
-  document.addEventListener("mouseup", async function (event) {
+  document.addEventListener("mouseup", async function() {
     if (getSelectedText()) {
       await chrome.storage.local
         .set({ selectedText: getSelectedText() })
-        .then(() => console.log("success: ", getSelectedText()))
-        .catch((err) => console.log(err));
     }
   });
+
   const numberElement = document.getElementById("subvalue_MOBILE");
   const iconButtonElements = document.querySelectorAll(`#${iconId}`);
   if (iconButtonElements.length) {
@@ -226,12 +221,14 @@ async function main() {
       ?.trim()
       .replace(/[^0-9]/g, "")
       ?.trim();
-    chrome.storage.local.set({ mobileNumber });
+
+    await chrome.storage.local.remove(["selectedText"]);
+    await chrome.storage.local.set({ mobileNumber });
   }
 
   document.body.append(iconButton);
 
-  iconButton.addEventListener("click", async function () {
+  iconButton.addEventListener("click", async function() {
     closeModal();
     const form = document.getElementById(formId)
       ? document.getElementById(formId)
