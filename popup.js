@@ -1,44 +1,68 @@
-document.addEventListener("DOMContentLoaded", function () {
-  // Get the active tab's URL
-  chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-    var activeTab = tabs[0];
-    var mobileInput = document.getElementById("mobile");
-    var mobileAttribute = activeTab.value_MOBILE;
+// global var
+let isSubmitting = false;
 
-    mobileInput.value = mobileAttribute;
-  });
+async function main(){
+const { webHookURL, mobileNumber, selectedText } = await chrome.storage.local.get([
+  "webHookURL",
+  "mobileNumber",
+  "selectedText"
+]);
 
-  // Send data to the webhook URL
-  document.getElementById("submit").addEventListener("click", function () {
-    var webhookURL = document.getElementById("webhook-url").value;
-    var mobile = document.getElementById("mobile").value;
-    var type = document.getElementById("type").value;
-    var content = document.getElementById("content").value;
-    // var attachment = document.getElementById("attachment").files[0];
+const webhookUrl = document.getElementById("webhookUrl").value = webHookURL || "";
+const mobileNumbers = document.getElementById("mobileNumber").value = mobileNumber || "";
+const sendType = document.getElementById("sendType").value;
+const messageContent = document.getElementById("messageContent").value;
+const mediaUrl = document.getElementById("mediaUrl").value;
+const formElement = document.querySelector("form");
 
-    var formData = {
-      "action": "send-message",
-      "type": "text",
-      "content": "this is a test message",
-      "mobile": "919652007118",
-    };
-    //if (attachment) {
-   //   formData.append("attachment", attachment);
-   // }
+formElement.addEventListener("submit", async function (event) {
+  if (isSubmitting) return;
+  document.getElementById("formSubmitBtn").disabled = true;
 
-    fetch('https://wa-toolbox.web.app/webhooks/XX1QKIIPM', {
-      method: "post",
-      payload: formData,
-    })
-      .then(function (response) {
-        if (response.ok) {
-          alert("Data submitted successfully.");
-        } else {
-          alert("Failed to submit data.");
-        }
-      })
-      .catch(function (error) {
-        console.error("Error:", error);
-      });
-  });
+  if (!webhookUrl || !mobileNumber || !messageContent) {
+    return alert("Fill the form.");
+  }
+
+  let data = {
+    action: "send-message",
+    type: sendType,
+    content: messageContent,
+    phone: mobileNumber,
+  };
+
+  if (sendType === "media" && !mediaUrl) {
+    return alert("Attach media url");
+  }
+
+  if (sendType === "media" && mediaUrl) {
+    data = { ...data, attachments: [`${mediaUrl}`] };
+  }
+
+  try {
+    isSubmitting = true;
+
+    await fetch(webhookUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    chrome.storage.sync.set({ webHookURL: webhookUrl });
+
+    alert("Your message has been send!");
+  } catch (error) {
+    console.log("Submitting error", error);
+    alert("Something went wrong");
+  } finally {
+    isSubmitting = false;
+    document.getElementById("formSubmitBtn").disabled = false;
+  }
+});
+}
+
+
+window.document.addEventListener("DOMContentLoaded", () => {
+  main();
 });

@@ -1,48 +1,38 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-  <title>Webhook Notifier</title>
-  <style>
-    body {
-      width: 300px;
-      padding: 10px;
-    }
-
-    label {
-      display: block;
-      margin-top: 10px;
-    }
-
-    input[type="text"],
-    textarea {
-      width: 100%;
-      padding: 5px;
-      margin-top: 5px;
-    }
-
-    button {
-      margin-top: 10px;
-    }
-  </style>
-  <script src="popup.js"></script>
+  <title></title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="popup.css" rel="stylesheet">
+  <script src="popup.js" defer></script>
 </head>
+
 <body>
-  <h1>Webhook Notifier</h1>
-  <label for="webhook-url">Webhook URL:</label>
-  <input type="text" id="webhook-url" />
 
-  <label for="mobile">Mobile:</label>
-  <input type="text" id="mobile" />
+  <main>
+    <form style="display: flex; flex-direction: column;  gap: 7px; padding: 20px">
+      <h1>Webhook Notifier</h1>
+      <label for="webhookUrl">Webhook URL:</label>
+      <input name="webhookUrl" type="text" id="webhookUrl" />
 
-  <label for="type">Type:</label>
-  <input type="text" id="type" />
+      <label for="mobileNumber">Mobile:</label>
+      <input name="mobileNumber" type="text" id="mobileNumber" />
 
-  <label for="attachment">Attachments:</label>
-  <input type="file" id="type" />
+      <label for="sendType">Type:</label>
+      <select name="sendType" id="sendType">
+        <option value="text">Text</option>
+        <option value="media">Media</option>
+      </select>
+      <label for="mediaUrl">Attachments url:</label>
+      <input name="mediaUrl" type="text" id="mediaUrl" />
 
-  <label for="content">Content:</label>
-  <textarea id="content"></textarea>
-
-  <button id="submit">Submit</button>
+      <label for="messageContent">Content:</label>
+      <textarea name="messageContent" id="messageContent" rows="7"></textarea>
+      <button id='formSubmitBtn' type="submit">Submit</button>
+    </form>
+  </main>
 </body>
+
 </html>

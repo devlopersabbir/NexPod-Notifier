@@ -1,0 +1,50 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
+main {
+  width: 380px;
+  background: #0f172a;
+  border-radius: 8px; 
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);  
+  position: relative; 
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 10px;
+  color: #f8fafc;
+}
+
+label {
+  color: #cbd5e1;
+}
+
+button {
+  cursor: pointer;
+  padding: 6px 8px;
+  font-size: 18px;
+  font-weight: 600;
+  background: #f1f5f9;
+  color: #0f172a;
+  border-radius: 8px;
+}
+
+
+input,
+select,
+textarea {
+  font-size: 18px;
+  font-weight: 600;
+  background: #475569;
+  color: #e2e8f0;
+  border-radius: 8px;
+  padding: 8px 12px;
+  outline: none;
+  border: 1px solid #1e293b;
+}
+textarea {
+  resize: none;
+}
+

@@ -1,23 +1,47 @@
 {
-  "manifest_version": 3,
   "name": "NexPod Notifier",
-  "version": "1.0",
-  "description": "NexPod Messager",
-  "permissions": ["activeTab", 
-		"https://crm.zoho.in/*",
-		"https://wa-toolbox.web.app/*",
-    "https://connect.pabbly.com/*"
-
-],
-"content_scripts": [
-  {
-    "js": ["content/content.js"],
-    "matches": ["https://crm.zoho.in/*"]
-  }
-],
+  "description": "NexPod Message sender",
+  "version": "0.0.3",
+  "manifest_version": 3,
   "action": {
-    "default_popup": "popup.html",
-    "default_title": "NexPod Notifier"
+    "default_title": "NexPod Notifier",
+    "default_icon": {
+      "16": "icon.png",
+      "24": "icon.png",
+      "32": "icon.png"
+    },
+    "default_popup": "popup.html"
   },
-  "host_permissions": ["https://connect.pabbly.com/","https://wa-toolbox.web.app/"]
+  "permissions": [
+    "storage",
+    "activeTab",
+    "tabs",
+    "unlimitedStorage"
+  ],
+  "icons": {
+    "128": "icon.png",
+    "16": "icon.png",
+    "256": "icon.png",
+    "48": "icon.png"
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "js": [
+        "content.js"
+      ],
+      "matches": [
+        "https://crm.zoho.com/crm/*",
+        "https://crm.zoho.in/crm/*"
+      ],
+      "run_at": "document_end"
+    }
+  ],
+  "host_permissions": [
+    "https://connect.pabbly.com/",
+    "https://wa-toolbox.web.app/"
+  ]
 }
